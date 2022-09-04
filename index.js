@@ -13,16 +13,16 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cors());
 app.use(logger);
-app.use('/transfer', createProxyMiddleware({
-  target: 'https://eaa3-5-161-87-7.ngrok.io',
+app.use('/', createProxyMiddleware({
+  target: 'http://eaa3-5-161-87-7.ngrok.io',
   changeOrigin: true,
 }))
 
 
-// 首页
-app.get("/", async (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+// // 首页
+// app.get("/", async (req, res) => {
+//   res.sendFile(path.join(__dirname, "index.html"));
+// });
 
 // 更新计数
 app.post("/api/count", async (req, res) => {
