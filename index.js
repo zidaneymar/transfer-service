@@ -2,6 +2,7 @@ const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const BaiduTranslate = require('node-baidu-translate')
 const { init: initDB, Counter } = require("./db");
 
 const logger = morgan("tiny");
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use(cors());
 app.use(logger);
 
+const bdt = new BaiduTranslate("20220905001332205", "qVskdSREUgmmOvrscBGl")
 
 
 // 首页
@@ -22,8 +24,11 @@ app.get("/", async (req, res) => {
 });
 app.post("/", async (req, res) => {
   const prompt = req.body.prompt;
+  const traslateResponse = await bdt.translate(prompt, "en")
+  const promptTranslated = traslateResponse.trans_result[0].dst;
+  // console.log(promptTranslated)
   const response = await axios.post("https://eaa3-5-161-87-7.ngrok.io", {
-    prompt: prompt
+    prompt: promptTranslated
   });
 
   res.send(response.data);
@@ -64,7 +69,7 @@ app.get("/api/wx_openid", async (req, res) => {
 const port = process.env.PORT || 80;
 
 async function bootstrap() {
-  await initDB();
+  // await initDB();
   app.listen(port, () => {
     console.log("启动成功", port);
   });
